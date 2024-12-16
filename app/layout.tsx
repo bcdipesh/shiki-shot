@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    template: "Shiki Shot",
-    default: "Shiki Shot",
+    template: "Shiki 式 Shot 撮 - %s",
+    default: "Shiki 式 Shot 撮",
   },
   description:
-    "Shiki Shot is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
-  applicationName: "Shiki Shot",
+    "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
+  applicationName: "Shiki 式 Shot 撮",
   authors: [
     {
       name: "Dipesh B C",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     },
   ],
   keywords: [
-    "Shiki Shot",
+    "Shiki 式 Shot 撮",
     "Code Snapshots",
     "Syntax Highlighting",
     "PWA",
@@ -36,31 +38,31 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     // url: "https://www.dipeshbc.com",
-    title: "Shiki Shot",
+    title: "Shiki 式 Shot 撮",
     description:
-      "Shiki Shot is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
-    siteName: "Shiki Shot",
+      "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
+    siteName: "Shiki 式 Shot 撮",
     images: [
       {
         url: "/app-screenshots/shiki-shot-preview.webp",
         width: 1200,
         height: 630,
-        alt: "Preview of Shiki Shot code snapshot.",
+        alt: "Preview of Shiki 式 Shot 撮 code snapshot.",
       },
     ],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shiki Shot",
+    title: "Shiki 式 Shot 撮",
     description:
-      "Shiki Shot is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
+      "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
     images: [
       {
         url: "/app-screenshots/shiki-shot-preview.webp",
         width: 1200,
         height: 630,
-        alt: "Preview of Shiki Shot code snapshot.",
+        alt: "Preview of Shiki 式 Shot 撮 code snapshot.",
       },
     ],
   },
@@ -88,15 +90,21 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="48x48" />
         <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="Shiki Shot" />
+        <meta name="apple-mobile-web-app-title" content="Shiki 式 Shot 撮" />
         <meta name="theme-color" content="" />
       </head>
-      <body
-        className={`${inter.className} overflow-y-scroll bg-secondary antialiased`}
-      >
-        <main className="container mx-auto max-w-screen-lg bg-primary-foreground px-6 md:px-16">
-          {children}
-        </main>
+
+      <body className={`${inter.className} overflow-y-scroll antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+          enableSystem
+        >
+          <main className="container mx-auto max-w-screen-lg px-6 md:px-16">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
