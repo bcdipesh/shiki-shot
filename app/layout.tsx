@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -104,6 +105,7 @@ export default function RootLayout({
           <main className="container mx-auto max-w-screen-lg px-6 md:px-16">
             {children}
           </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
