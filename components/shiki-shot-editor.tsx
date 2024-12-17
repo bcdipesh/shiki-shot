@@ -1,5 +1,6 @@
 "use client";
 
+import type { JSX } from "react";
 import { useState, useEffect, useRef } from "react";
 import {
   bundledThemesInfo,
@@ -10,7 +11,7 @@ import {
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 
-import { getSingletonHighlighter } from "@/lib/shiki-highlighter";
+import { highlight } from "@/lib/shiki-highlighter";
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +19,7 @@ export function ShikiShotEditor() {
   const [theme, setTheme] = useState<BundledTheme>("vitesse-dark");
   const [lang, setLang] = useState<BundledLanguage>("typescript");
   const [input, setInput] = useState("// Type your code here");
-  const [highlightedCode, setHighlightedCode] = useState<string>("");
+  const [highlightedCode, setHighlightedCode] = useState<JSX.Element>();
   const codeEditorContainerRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLTextAreaElement>(null);
@@ -33,16 +34,7 @@ export function ShikiShotEditor() {
       }
     }
 
-    const highlightCode = async () => {
-      const highlighterInstance = await getSingletonHighlighter();
-      const highlighted = highlighterInstance.codeToHtml(input, {
-        lang,
-        theme,
-      });
-      setHighlightedCode(highlighted);
-    };
-
-    highlightCode();
+    highlight(input, lang, theme).then((output) => setHighlightedCode(output));
   }, [input, lang, theme]);
 
   const captureCodeSnapshot = async () => {
@@ -135,10 +127,11 @@ export function ShikiShotEditor() {
         {/* Highlighted Code (Hidden Behind Textarea) */}
         <div
           ref={codeRef}
-          className="shiki absolute left-0 top-0 z-0 h-full min-h-[25rem] w-full whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
-          dangerouslySetInnerHTML={{ __html: highlightedCode }}
+          className="shiki absolute left-0 top-0 z-0 h-full min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
           aria-hidden="true"
-        />
+        >
+          {highlightedCode && highlightedCode}
+        </div>
 
         {/* Transparent Input Layer */}
         <textarea
@@ -146,9 +139,6 @@ export function ShikiShotEditor() {
           onChange={(e) => setInput(e.target.value)}
           onScroll={handleScroll}
           className="relative inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-auto rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
-          style={{
-            caretColor: "#6b7280",
-          }}
           spellCheck="false"
           autoCapitalize="off"
           autoCorrect="off"

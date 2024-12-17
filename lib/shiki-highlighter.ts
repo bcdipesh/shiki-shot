@@ -1,19 +1,23 @@
-import {
-  bundledLanguages,
-  bundledThemes,
-  createHighlighter,
-  Highlighter,
-} from "shiki";
+import type { JSX } from "react";
+import type { BundledLanguage, BundledTheme } from "shiki";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import { Fragment } from "react";
+import { jsx, jsxs } from "react/jsx-runtime";
+import { codeToHast } from "shiki/bundle/web";
 
-let highlighterInstance: Highlighter | null = null;
+export async function highlight(
+  code: string,
+  lang: BundledLanguage,
+  theme: BundledTheme,
+) {
+  const out = await codeToHast(code, {
+    lang,
+    theme,
+  });
 
-export const getSingletonHighlighter = async () => {
-  if (!highlighterInstance) {
-    highlighterInstance = await createHighlighter({
-      themes: Object.keys(bundledThemes),
-      langs: Object.keys(bundledLanguages),
-    });
-  }
-
-  return highlighterInstance;
-};
+  return toJsxRuntime(out, {
+    Fragment,
+    jsx,
+    jsxs,
+  }) as JSX.Element;
+}
