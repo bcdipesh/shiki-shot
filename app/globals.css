@@ -79,13 +79,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-.shiki {
-	padding: 1.5rem;
-	overflow: auto;
-	border-radius: 0.75rem;
-}
-
-.shiki .line {
-	line-height: 1.75rem;
-}

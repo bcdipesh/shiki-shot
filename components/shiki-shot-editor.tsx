@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   bundledThemesInfo,
   bundledLanguagesInfo,
@@ -11,8 +11,6 @@ import html2canvas from "html2canvas";
 import { toast } from "sonner";
 
 import { highlighter } from "@/lib/shiki-highlighter";
-
-import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 
@@ -20,24 +18,37 @@ export function ShikiShotEditor() {
   const [theme, setTheme] = useState<BundledTheme>("vitesse-dark");
   const [lang, setLang] = useState<BundledLanguage>("typescript");
   const [input, setInput] = useState("// Type your code here");
-  const [output, setOutput] = useState("");
+  const [highlightedCode, setHighlightedCode] = useState<string>("");
+  const codeEditorContainerRef = useRef<HTMLDivElement>(null);
+  const codeRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (codeRef.current && codeEditorContainerRef.current) {
+      const preEl = codeRef.current.children[0] as HTMLPreElement;
+
+      if (preEl) {
+        codeEditorContainerRef.current.style.backgroundColor =
+          preEl.style.backgroundColor;
+      }
+    }
+
     const highlightCode = async () => {
-      const highlightedCode = (await highlighter).codeToHtml(input, {
+      const highlighterInstance = await highlighter;
+      const highlighted = highlighterInstance.codeToHtml(input, {
         lang,
         theme,
       });
-      setOutput(highlightedCode);
+      setHighlightedCode(highlighted);
     };
 
     highlightCode();
   }, [input, lang, theme]);
 
   const captureCodeSnapshot = async () => {
-    const codeCanvas = await html2canvas(
-      document.querySelector(".shiki") as HTMLElement,
-    );
+    if (!codeRef.current) return;
+
+    const codeCanvas = await html2canvas(codeRef.current);
     const codeSnapshot = codeCanvas.toDataURL("image/png");
 
     const image = new Image();
@@ -66,9 +77,26 @@ export function ShikiShotEditor() {
     };
   };
 
+  const handleScroll = () => {
+    if (!codeRef.current || !editorRef.current) {
+      return;
+    }
+
+    const preEl = codeRef.current.children[0] as HTMLPreElement;
+
+    if (!preEl) {
+      return;
+    }
+
+    preEl.scrollLeft = editorRef.current.scrollLeft;
+    preEl.scrollTop = editorRef.current.scrollTop;
+  };
+
   return (
     <div className="my-10 flex flex-col gap-10">
-      <div className="flex flex-col gap-10 md:flex-row">
+      {/* Controls */}
+      <div className="flex flex-col gap-4 md:flex-row">
+        {/* Theme Selector */}
         <Combobox
           options={bundledThemesInfo.map((theme) => ({
             value: theme.id,
@@ -79,6 +107,7 @@ export function ShikiShotEditor() {
           placeholder="Select a theme"
         />
 
+        {/* Language Selector */}
         <Combobox
           options={bundledLanguagesInfo.map((language) => ({
             value: language.id,
@@ -89,16 +118,42 @@ export function ShikiShotEditor() {
           placeholder="Select a language"
         />
 
-        <Button onClick={captureCodeSnapshot}>Capture Code Snapshot</Button>
+        {/* Capture Snapshot */}
+        <Button
+          onClick={captureCodeSnapshot}
+          className="bg-[#32363F] text-[#ACACAE] hover:bg-[#414852]"
+        >
+          Capture Code Snapshot
+        </Button>
       </div>
 
-      <Textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        rows={10}
-      />
+      {/* Editor & Preview */}
+      <div
+        ref={codeEditorContainerRef}
+        className="relative min-h-full w-full rounded-xl shadow-lg"
+      >
+        {/* Highlighted Code (Hidden Behind Textarea) */}
+        <div
+          ref={codeRef}
+          className="shiki absolute left-0 top-0 z-0 h-full min-h-[25rem] w-full whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
+          dangerouslySetInnerHTML={{ __html: highlightedCode }}
+          aria-hidden="true"
+        />
 
-      <div dangerouslySetInnerHTML={{ __html: output }} />
+        {/* Transparent Input Layer */}
+        <textarea
+          ref={editorRef}
+          onChange={(e) => setInput(e.target.value)}
+          onScroll={handleScroll}
+          className="relative inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-auto rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
+          style={{
+            caretColor: "#6b7280",
+          }}
+          spellCheck="false"
+          autoCapitalize="off"
+          autoCorrect="off"
+        />
+      </div>
     </div>
   );
 }

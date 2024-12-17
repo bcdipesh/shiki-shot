@@ -95,7 +95,9 @@ export default function RootLayout({
         <meta name="theme-color" content="" />
       </head>
 
-      <body className={`${inter.className} overflow-y-scroll antialiased`}>
+      <body
+        className={`${inter.className} overflow-y-scroll bg-[#1B1C1E] antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
