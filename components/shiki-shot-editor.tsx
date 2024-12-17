@@ -10,7 +10,7 @@ import {
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 
-import { highlighter } from "@/lib/shiki-highlighter";
+import { getSingletonHighlighter } from "@/lib/shiki-highlighter";
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 
@@ -34,7 +34,7 @@ export function ShikiShotEditor() {
     }
 
     const highlightCode = async () => {
-      const highlighterInstance = await highlighter;
+      const highlighterInstance = await getSingletonHighlighter();
       const highlighted = highlighterInstance.codeToHtml(input, {
         lang,
         theme,

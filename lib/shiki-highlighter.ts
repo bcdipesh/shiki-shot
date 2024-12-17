@@ -1,6 +1,19 @@
-import { bundledLanguages, bundledThemes, createHighlighter } from "shiki";
+import {
+  bundledLanguages,
+  bundledThemes,
+  createHighlighter,
+  Highlighter,
+} from "shiki";
 
-export const highlighter = createHighlighter({
-  themes: Object.keys(bundledThemes),
-  langs: Object.keys(bundledLanguages),
-});
+let highlighterInstance: Highlighter | null = null;
+
+export const getSingletonHighlighter = async () => {
+  if (!highlighterInstance) {
+    highlighterInstance = await createHighlighter({
+      themes: Object.keys(bundledThemes),
+      langs: Object.keys(bundledLanguages),
+    });
+  }
+
+  return highlighterInstance;
+};
