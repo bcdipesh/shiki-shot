@@ -8,7 +8,7 @@ export default function Page() {
           <span className="text-[#8cccd5]">Shiki 式</span>{" "}
           <span className="text-[#f4a6a6]">Shot 撮</span>
         </h1>
-        <p className="text-2xl text-[#E4E3DA]">Turn your code into art.</p>
+        <p className="text-2xl">Turn your code into art.</p>
       </div>
 
       <div id="editor-container">

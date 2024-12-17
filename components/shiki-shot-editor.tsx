@@ -1,7 +1,7 @@
 "use client";
 
 import type { JSX } from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import {
   bundledThemesInfo,
   bundledLanguagesInfo,
@@ -24,7 +24,7 @@ export function ShikiShotEditor() {
   const codeRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (codeRef.current && codeEditorContainerRef.current) {
       const preEl = codeRef.current.children[0] as HTMLPreElement;
 
@@ -74,14 +74,8 @@ export function ShikiShotEditor() {
       return;
     }
 
-    const preEl = codeRef.current.children[0] as HTMLPreElement;
-
-    if (!preEl) {
-      return;
-    }
-
-    preEl.scrollLeft = editorRef.current.scrollLeft;
-    preEl.scrollTop = editorRef.current.scrollTop;
+    codeRef.current.scrollLeft = editorRef.current.scrollLeft;
+    codeRef.current.scrollTop = editorRef.current.scrollTop;
   };
 
   return (
@@ -111,23 +105,18 @@ export function ShikiShotEditor() {
         />
 
         {/* Capture Snapshot */}
-        <Button
-          onClick={captureCodeSnapshot}
-          className="bg-[#32363F] text-[#ACACAE] hover:bg-[#414852]"
-        >
-          Capture Code Snapshot
-        </Button>
+        <Button onClick={captureCodeSnapshot}>Capture Code Snapshot</Button>
       </div>
 
       {/* Editor & Preview */}
       <div
         ref={codeEditorContainerRef}
-        className="relative min-h-full w-full rounded-xl shadow-lg"
+        className="relative h-full min-h-[25rem] w-full rounded-xl border bg-card shadow"
       >
         {/* Highlighted Code (Hidden Behind Textarea) */}
         <div
           ref={codeRef}
-          className="shiki absolute left-0 top-0 z-0 h-full min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
+          className="shiki absolute inset-0 z-0 min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
           aria-hidden="true"
         >
           {highlightedCode && highlightedCode}
@@ -138,7 +127,7 @@ export function ShikiShotEditor() {
           ref={editorRef}
           onChange={(e) => setInput(e.target.value)}
           onScroll={handleScroll}
-          className="relative inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-auto rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
+          className="absolute inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
           spellCheck="false"
           autoCapitalize="off"
           autoCorrect="off"

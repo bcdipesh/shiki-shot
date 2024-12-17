@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Footer } from "@/components/footer";
 
 import "./globals.css";
 
@@ -95,18 +96,17 @@ export default function RootLayout({
         <meta name="theme-color" content="" />
       </head>
 
-      <body
-        className={`${inter.className} overflow-y-scroll bg-[#1B1C1E] antialiased`}
-      >
+      <body className={`${inter.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange
           enableSystem
         >
-          <main className="container mx-auto max-w-screen-lg px-6 md:px-16">
-            {children}
-          </main>
+          <div className="mx-auto max-w-screen-md px-6">
+            <main>{children}</main>
+            <Footer />
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>
