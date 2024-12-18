@@ -1,0 +1,45 @@
+{
+  "name": "Shiki 式 Shot 撮",
+  "short_name": "Shiki Shot",
+  "description": "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0A0A0A",
+  "background_color": "#0A0A0A",
+  "screenshots": [
+    {
+      "src": "/app-images/screenshot-wide-760-630.png",
+      "sizes": "760x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Shiki Shot"
+    }
+  ],
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/app-images/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-images/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/app-images/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-images/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
