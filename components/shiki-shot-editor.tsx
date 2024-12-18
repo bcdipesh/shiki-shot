@@ -38,9 +38,11 @@ export function ShikiShotEditor() {
   }, [input, lang, theme]);
 
   const captureCodeSnapshot = async () => {
-    if (!codeRef.current) return;
+    if (!codeEditorContainerRef.current) return;
 
-    const codeCanvas = await html2canvas(codeRef.current);
+    const codeCanvas = await html2canvas(codeEditorContainerRef.current, {
+      backgroundColor: "transparent",
+    });
     const codeSnapshot = codeCanvas.toDataURL("image/png");
 
     const image = new Image();
