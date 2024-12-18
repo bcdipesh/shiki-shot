@@ -79,7 +79,7 @@ export function ShikiShotEditor() {
   };
 
   return (
-    <div className="my-10 flex flex-col gap-1">
+    <div className="my-10 flex flex-col gap-5">
       {/* Controls */}
       <div className="flex flex-col gap-4 md:flex-row">
         {/* Theme Selector */}
