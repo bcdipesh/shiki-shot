@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { ChevronDown } from "lucide-react";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,8 @@ export function Combobox({
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="secondary" className="w-full justify-start">
+            <ChevronDown />
             {selectedOption ? <>{selectedOption.label}</> : <>{placeholder}</>}
           </Button>
         </PopoverTrigger>
@@ -93,7 +95,7 @@ export function Combobox({
         <DrawerTitle>{placeholder}</DrawerTitle>
       </VisuallyHidden.Root>
       <DrawerTrigger asChild>
-        <Button variant="outline" className="w-full justify-start">
+        <Button variant="secondary" className="w-full justify-start">
           {selectedOption ? <>{selectedOption.label}</> : <>{placeholder}</>}
         </Button>
       </DrawerTrigger>

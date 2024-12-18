@@ -79,7 +79,7 @@ export function ShikiShotEditor() {
   };
 
   return (
-    <div className="my-10 flex flex-col gap-10">
+    <div className="my-10 flex flex-col gap-1">
       {/* Controls */}
       <div className="flex flex-col gap-4 md:flex-row">
         {/* Theme Selector */}
@@ -111,7 +111,7 @@ export function ShikiShotEditor() {
       {/* Editor & Preview */}
       <div
         ref={codeEditorContainerRef}
-        className="relative h-full min-h-[25rem] w-full rounded-xl border bg-card shadow"
+        className="relative h-full min-h-[25rem] w-full rounded-xl"
       >
         {/* Highlighted Code (Hidden Behind Textarea) */}
         <div
