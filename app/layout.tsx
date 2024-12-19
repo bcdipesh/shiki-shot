@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { VercelToolbar } from "@vercel/toolbar/next";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -34,19 +35,19 @@ export const metadata: Metadata = {
   ],
   creator: "Dipesh B C",
   robots: "index, follow",
-  // alternates: {
-  //   canonical: "https://www.dipeshbc.com",
-  // },
+  alternates: {
+    canonical: "https://shikishot.vercel.app",
+  },
   openGraph: {
     type: "website",
-    // url: "https://www.dipeshbc.com",
+    url: "https://shikishot.vercel.app",
     title: "Shiki 式 Shot 撮",
     description:
       "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
     siteName: "Shiki 式 Shot 撮",
     images: [
       {
-        url: "/app-screenshots/shiki-shot-preview.webp",
+        url: "/app-images/og-image.png",
         width: 1200,
         height: 630,
         alt: "Preview of Shiki 式 Shot 撮 code snapshot.",
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
       "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
     images: [
       {
-        url: "/app-screenshots/shiki-shot-preview.webp",
+        url: "/app-images/og-image.png",
         width: 1200,
         height: 630,
         alt: "Preview of Shiki 式 Shot 撮 code snapshot.",
@@ -80,6 +81,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -293,7 +296,10 @@ export default function RootLayout({
           enableSystem
         >
           <div className="mx-auto max-w-screen-md px-6">
-            <main>{children}</main>
+            <main>
+              {children}
+              {shouldInjectToolbar && <VercelToolbar />}
+            </main>
             <Footer />
           </div>
           <Toaster />

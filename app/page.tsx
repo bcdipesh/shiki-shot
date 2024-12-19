@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 export default function Page() {
   return (
-    <div className="home-page-container py-40">
+    <div className="home-page-container pt-40">
       <div className="flex flex-col gap-8 text-center">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           <span className="text-[#8cccd5]">Shiki 式</span>{" "}
