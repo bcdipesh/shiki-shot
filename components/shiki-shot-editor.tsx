@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, usePathname } from "next/navigation";
-import { type JSX, Suspense } from "react";
+import { type JSX } from "react";
 import { useState, useRef, useLayoutEffect } from "react";
 import {
   bundledThemesInfo,
@@ -152,83 +152,81 @@ export function ShikiShotEditor() {
   };
 
   return (
-    <Suspense>
-      <div className="my-10 flex flex-col gap-5">
-        {/* Controls */}
-        <div className="flex flex-col gap-4 md:flex-row">
-          {/* Theme Selector */}
-          <Combobox
-            options={bundledThemesInfo.map((theme) => ({
-              value: theme.id,
-              label: theme.displayName,
-            }))}
-            selectedValue={{
-              value: theme,
-              label: bundledThemesInfo.find(({ id }) => id === selectedTheme)
-                ?.displayName as string,
-            }}
-            onValueChange={handleThemeChange}
-            placeholder="Select a theme"
-          />
+    <div className="my-10 flex flex-col gap-5">
+      {/* Controls */}
+      <div className="flex flex-col gap-4 md:flex-row">
+        {/* Theme Selector */}
+        <Combobox
+          options={bundledThemesInfo.map((theme) => ({
+            value: theme.id,
+            label: theme.displayName,
+          }))}
+          selectedValue={{
+            value: theme,
+            label: bundledThemesInfo.find(({ id }) => id === selectedTheme)
+              ?.displayName as string,
+          }}
+          onValueChange={handleThemeChange}
+          placeholder="Select a theme"
+        />
 
-          {/* Language Selector */}
-          <Combobox
-            options={bundledLanguagesInfo.map((language) => ({
-              value: language.id,
-              label: language.name,
-            }))}
-            selectedValue={{ value: lang, label: "TypeScript" }}
-            onValueChange={(value) => setLang(value as BundledLanguage)}
-            placeholder="Select a language"
-          />
+        {/* Language Selector */}
+        <Combobox
+          options={bundledLanguagesInfo.map((language) => ({
+            value: language.id,
+            label: language.name,
+          }))}
+          selectedValue={{ value: lang, label: "TypeScript" }}
+          onValueChange={(value) => setLang(value as BundledLanguage)}
+          placeholder="Select a language"
+        />
 
-          {/* Clipboard Actions */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button>Copy to Clipboard</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Available Options</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={copyCodeImageToClipboard}>
-                  Image
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={getShareableUrl}>
-                  Shareable URL
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Editor & Preview */}
-        <div
-          ref={codeEditorContainerRef}
-          className="relative h-full min-h-[25rem] w-full rounded-xl"
-        >
-          {/* Highlighted Code (Hidden Behind Textarea) */}
-          <div
-            ref={codeRef}
-            className="shiki absolute inset-0 z-0 min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
-            aria-hidden="true"
-          >
-            {highlightedCode && highlightedCode}
-          </div>
-
-          {/* Transparent Input Layer */}
-          <textarea
-            ref={editorRef}
-            defaultValue={input}
-            onChange={handleInputChange}
-            onScroll={handleScroll}
-            className="absolute inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
-            spellCheck="false"
-            autoCapitalize="off"
-            autoCorrect="off"
-          />
-        </div>
+        {/* Clipboard Actions */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>Copy to Clipboard</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Available Options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={copyCodeImageToClipboard}>
+                Image
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={getShareableUrl}>
+                Shareable URL
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-    </Suspense>
+
+      {/* Editor & Preview */}
+      <div
+        ref={codeEditorContainerRef}
+        className="relative h-full min-h-[25rem] w-full rounded-xl"
+      >
+        {/* Highlighted Code (Hidden Behind Textarea) */}
+        <div
+          ref={codeRef}
+          className="shiki absolute inset-0 z-0 min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
+          aria-hidden="true"
+        >
+          {highlightedCode && highlightedCode}
+        </div>
+
+        {/* Transparent Input Layer */}
+        <textarea
+          ref={editorRef}
+          defaultValue={input}
+          onChange={handleInputChange}
+          onScroll={handleScroll}
+          className="absolute inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
+          spellCheck="false"
+          autoCapitalize="off"
+          autoCorrect="off"
+        />
+      </div>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { ShikiShotEditor } from "@/components/shiki-shot-editor";
+import { Suspense } from "react";
 
 export default function Page() {
   return (
@@ -12,7 +13,9 @@ export default function Page() {
       </div>
 
       <div id="editor-container">
-        <ShikiShotEditor />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ShikiShotEditor />
+        </Suspense>
       </div>
     </div>
   );
