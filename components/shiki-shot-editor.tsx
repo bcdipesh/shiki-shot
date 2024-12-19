@@ -46,16 +46,9 @@ export function ShikiShotEditor() {
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
   useLayoutEffect(() => {
-    if (codeRef.current && codeEditorContainerRef.current) {
-      const preEl = codeRef.current.children[0] as HTMLPreElement;
-
-      if (preEl) {
-        codeEditorContainerRef.current.style.backgroundColor =
-          preEl.style.backgroundColor;
-      }
-    }
-
-    highlight(input, lang, theme).then((output) => setHighlightedCode(output));
+    highlight(input, lang, theme).then((output) => {
+      setHighlightedCode(output);
+    });
   }, [input, lang, theme]);
 
   const copyCodeImageToClipboard = async () => {
@@ -207,12 +200,12 @@ export function ShikiShotEditor() {
       {/* Editor & Preview */}
       <div
         ref={codeEditorContainerRef}
-        className="relative h-full min-h-96 w-full rounded-xl"
+        className="relative h-full min-h-96 w-full rounded-xl bg-[--shiki-background]"
       >
         {/* Highlighted Code (Hidden Behind Textarea) */}
         <span
           ref={codeRef}
-          className="absolute inset-0 z-0 min-h-96 w-full overflow-hidden whitespace-pre-wrap font-mono text-sm leading-7"
+          className="absolute inset-0 z-0 h-full min-h-96 w-full overflow-hidden whitespace-pre-wrap rounded-xl bg-transparent font-mono text-sm leading-7"
           aria-hidden="true"
         >
           {highlightedCode && highlightedCode}
