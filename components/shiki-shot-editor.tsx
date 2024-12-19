@@ -59,11 +59,14 @@ export function ShikiShotEditor() {
   }, [input, lang, theme]);
 
   const copyCodeImageToClipboard = async () => {
-    if (!codeEditorContainerRef.current) return;
+    if (!codeRef.current) return;
 
-    const codeCanvas = await html2canvas(codeEditorContainerRef.current, {
-      backgroundColor: "transparent",
-    });
+    const codeCanvas = await html2canvas(
+      codeRef.current.querySelector("pre") as HTMLPreElement,
+      {
+        backgroundColor: "transparent",
+      },
+    );
     const codeSnapshot = codeCanvas.toDataURL("image/png");
 
     const image = new Image();
@@ -204,16 +207,16 @@ export function ShikiShotEditor() {
       {/* Editor & Preview */}
       <div
         ref={codeEditorContainerRef}
-        className="relative h-full min-h-[25rem] w-full rounded-xl"
+        className="relative h-full min-h-96 w-full rounded-xl"
       >
         {/* Highlighted Code (Hidden Behind Textarea) */}
-        <div
+        <span
           ref={codeRef}
-          className="shiki absolute inset-0 z-0 min-h-[25rem] w-full overflow-hidden whitespace-pre-wrap rounded-xl p-4 font-mono text-sm leading-7"
+          className="absolute inset-0 z-0 min-h-96 w-full overflow-hidden whitespace-pre-wrap font-mono text-sm leading-7"
           aria-hidden="true"
         >
           {highlightedCode && highlightedCode}
-        </div>
+        </span>
 
         {/* Transparent Input Layer */}
         <textarea
@@ -221,7 +224,7 @@ export function ShikiShotEditor() {
           defaultValue={input}
           onChange={handleInputChange}
           onScroll={handleScroll}
-          className="absolute inset-0 z-10 h-full min-h-[25rem] w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
+          className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
           spellCheck="false"
           autoCapitalize="off"
           autoCorrect="off"

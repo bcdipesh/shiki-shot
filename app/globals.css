@@ -77,3 +77,9 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+pre.shiki {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
