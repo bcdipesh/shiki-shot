@@ -3,7 +3,7 @@
   "short_name": "Shiki Shot",
   "description": "Shiki 式 Shot 撮 is a sleek Progressive Web App for creating and sharing stunning code snapshots. Powered by Shiki syntax highlighting, it combines simplicity and elegance to showcase your code like never before.",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "theme_color": "#0A0A0A",
   "background_color": "#0A0A0A",
   "screenshots": [
@@ -41,5 +41,16 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "dir": "ltr",
+  "lang": "en",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "fullscreen",
+    "browser"
+  ],
+  "categories": ["personalization", "productivity", "utilities"],
+  "id": "com.dipeshbc.shiki-shot"
 }
