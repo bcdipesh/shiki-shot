@@ -1,8 +1,7 @@
 "use client";
 
 import { useSearchParams, usePathname } from "next/navigation";
-import { type JSX } from "react";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, type JSX } from "react";
 import {
   bundledThemesInfo,
   bundledLanguagesInfo,
@@ -13,19 +12,10 @@ import html2canvas from "html2canvas";
 import { toast } from "sonner";
 
 import { highlight } from "@/lib/shiki-highlighter";
-import { Combobox } from "@/components/ui/combobox";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import {
-  DropdownMenuGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+import { UserAction } from "@/components/user-actions";
+import { LanguageSelector } from "@/components/language-selector";
+import { ThemeSelector } from "@/components/theme-selector";
+import { Codeplayground } from "@/components/code-playground";
 
 export function ShikiShotEditor() {
   const pathname = usePathname();
@@ -41,15 +31,13 @@ export function ShikiShotEditor() {
   const [lang, setLang] = useState<BundledLanguage>(selectedLang);
   const [input, setInput] = useState(code);
   const [highlightedCode, setHighlightedCode] = useState<JSX.Element>();
-  const codeEditorContainerRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<HTMLTextAreaElement>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     highlight(input, lang, theme).then((output) => {
       setHighlightedCode(output);
     });
-  }, [input, lang, theme]);
+  }, []);
 
   const copyCodeImageToClipboard = async () => {
     if (!codeRef.current) return;
@@ -113,15 +101,6 @@ export function ShikiShotEditor() {
     }
   };
 
-  const handleScroll = () => {
-    if (!codeRef.current || !editorRef.current) {
-      return;
-    }
-
-    codeRef.current.scrollLeft = editorRef.current.scrollLeft;
-    codeRef.current.scrollTop = editorRef.current.scrollTop;
-  };
-
   const handleThemeChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
 
@@ -134,11 +113,16 @@ export function ShikiShotEditor() {
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = async (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const { value } = event.target;
     const params = new URLSearchParams(searchParams);
 
     setInput(value);
+
+    const output = await highlight(value, lang, theme);
+    setHighlightedCode(output);
 
     if (value) {
       params.set("code", value);
@@ -149,80 +133,31 @@ export function ShikiShotEditor() {
 
   return (
     <div className="my-10 flex flex-col gap-5">
-      {/* Controls */}
       <div className="flex flex-col gap-4 md:flex-row">
-        {/* Theme Selector */}
-        <Combobox
-          options={bundledThemesInfo.map((theme) => ({
-            value: theme.id,
-            label: theme.displayName,
-          }))}
-          selectedValue={{
-            value: theme,
-            label: bundledThemesInfo.find(({ id }) => id === selectedTheme)
-              ?.displayName as string,
-          }}
-          onValueChange={handleThemeChange}
-          placeholder="Select a theme"
+        <ThemeSelector
+          themes={bundledThemesInfo}
+          selectedTheme={theme}
+          onThemeChange={handleThemeChange}
         />
 
-        {/* Language Selector */}
-        <Combobox
-          options={bundledLanguagesInfo.map((language) => ({
-            value: language.id,
-            label: language.name,
-          }))}
-          selectedValue={{ value: lang, label: "TypeScript" }}
-          onValueChange={(value) => setLang(value as BundledLanguage)}
-          placeholder="Select a language"
+        <LanguageSelector
+          langs={bundledLanguagesInfo}
+          selectedLang={lang}
+          onLangChange={(value) => setLang(value as BundledLanguage)}
         />
 
-        {/* Clipboard Actions */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button>Copy to Clipboard</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Available Options</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={copyCodeImageToClipboard}>
-                Image
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={getShareableUrl}>
-                Shareable URL
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Editor & Preview */}
-      <div
-        ref={codeEditorContainerRef}
-        className="relative h-full min-h-96 w-full rounded-xl bg-[--shiki-background]"
-      >
-        {/* Highlighted Code (Hidden Behind Textarea) */}
-        <span
-          ref={codeRef}
-          className="absolute inset-0 z-0 h-full min-h-96 w-full overflow-hidden whitespace-pre-wrap rounded-xl bg-transparent font-mono text-sm leading-7"
-          aria-hidden="true"
-        >
-          {highlightedCode && highlightedCode}
-        </span>
-
-        {/* Transparent Input Layer */}
-        <textarea
-          ref={editorRef}
-          defaultValue={input}
-          onChange={handleInputChange}
-          onScroll={handleScroll}
-          className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-transparent caret-gray-500 outline-none"
-          spellCheck="false"
-          autoCapitalize="off"
-          autoCorrect="off"
+        <UserAction
+          onCopyImage={copyCodeImageToClipboard}
+          onGenerateUrl={getShareableUrl}
         />
       </div>
+
+      <Codeplayground
+        highlightedCodeRef={codeRef}
+        highlightedCode={highlightedCode as JSX.Element}
+        defaultValue={input}
+        onInputChange={handleInputChange}
+      />
     </div>
   );
 }

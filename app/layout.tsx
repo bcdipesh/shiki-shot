@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { VercelToolbar } from "@vercel/toolbar/next";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -300,7 +300,7 @@ export default function RootLayout({
             <main>
               {children}
               {shouldInjectToolbar && <VercelToolbar />}
-              <Analytics/>
+              <Analytics />
             </main>
             <Footer />
           </div>

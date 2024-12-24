@@ -1,7 +1,7 @@
 import { ShikiShotEditor } from "@/components/shiki-shot-editor";
 import { Suspense } from "react";
 
-export default function Page() {
+export default function HomePage() {
   return (
     <div className="home-page-container pt-40">
       <div className="flex flex-col gap-8 text-center">
