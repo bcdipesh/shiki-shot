@@ -43,6 +43,8 @@
     "@types/react-dom": "19.0.0",
     "@types/web-push": "3.6.4",
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-react-app": "^7.0.1",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",

@@ -21,22 +21,46 @@ export function ShikiShotEditor() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const selectedTheme =
+  const initialTheme =
     (searchParams.get("theme") as BundledTheme) || "vitesse-dark";
-  const selectedLang =
+  const initialLang =
     (searchParams.get("lang") as BundledLanguage) || "typescript";
-  const code = searchParams.get("code") || "// Type your code here";
+  const initialCode = searchParams.get("code") || "// Type your code here";
 
-  const [theme, setTheme] = useState<BundledTheme>(selectedTheme);
-  const [lang, setLang] = useState<BundledLanguage>(selectedLang);
-  const [input, setInput] = useState(code);
+  const [theme, setTheme] = useState<BundledTheme>(initialTheme);
+  const [lang, setLang] = useState<BundledLanguage>(initialLang);
+  const [input, setInput] = useState(initialCode);
   const [highlightedCode, setHighlightedCode] = useState<JSX.Element>();
   const codeRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Initial highlight on mount
   useEffect(() => {
-    highlight(input, lang, theme).then((output) => {
+    highlight(initialCode, initialLang, initialTheme).then((output) => {
       setHighlightedCode(output);
     });
+  }, [initialCode, initialLang, initialTheme]);
+
+  useEffect(() => {
+    const textArea = textAreaRef.current;
+    const code = codeRef.current;
+
+    const handleScroll = () => {
+      if (textArea && code) {
+        code.scrollTop = textArea.scrollTop;
+        code.scrollLeft = textArea.scrollLeft;
+      }
+    };
+
+    if (textArea) {
+      textArea.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (textArea) {
+        textArea.removeEventListener("scroll", handleScroll);
+      }
+    };
   }, []);
 
   const copyCodeImageToClipboard = async () => {
@@ -46,6 +70,7 @@ export function ShikiShotEditor() {
       codeRef.current.querySelector("pre") as HTMLPreElement,
       {
         backgroundColor: "transparent",
+        scale: 2,
       },
     );
     const codeSnapshot = codeCanvas.toDataURL("image/png");
@@ -82,7 +107,10 @@ export function ShikiShotEditor() {
 
   const getShareableUrl = async () => {
     const params = new URLSearchParams(searchParams);
-    params.set("code", input);
+    if (input) {
+      params.set("code", input);
+    }
+
     params.set("theme", theme);
     params.set("lang", lang);
 
@@ -101,38 +129,34 @@ export function ShikiShotEditor() {
     }
   };
 
-  const handleThemeChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+  const handleThemeChange = async (selectedTheme: string) => {
+    const theme = selectedTheme as BundledTheme;
+    const output = await highlight(input, lang, theme);
 
-    setTheme(value as BundledTheme);
+    setTheme(theme);
+    setHighlightedCode(output);
+  };
 
-    if (value) {
-      params.set("theme", value);
-    } else {
-      params.delete("theme");
-    }
+  const handleLangChange = async (selectedLang: string) => {
+    const lang = selectedLang as BundledLanguage;
+    const output = await highlight(input, lang, theme);
+
+    setLang(lang);
+    setHighlightedCode(output);
   };
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { value } = event.target;
-    const params = new URLSearchParams(searchParams);
+    const output = await highlight(value, lang, theme);
 
     setInput(value);
-
-    const output = await highlight(value, lang, theme);
     setHighlightedCode(output);
-
-    if (value) {
-      params.set("code", value);
-    } else {
-      params.delete("code");
-    }
   };
 
   return (
-    <div className="my-10 flex flex-col gap-5">
+    <div className="my-10 flex min-h-96 flex-col gap-5 bg-[--shiki-background]">
       <div className="flex flex-col gap-4 md:flex-row">
         <ThemeSelector
           themes={bundledThemesInfo}
@@ -143,7 +167,7 @@ export function ShikiShotEditor() {
         <LanguageSelector
           langs={bundledLanguagesInfo}
           selectedLang={lang}
-          onLangChange={(value) => setLang(value as BundledLanguage)}
+          onLangChange={handleLangChange}
         />
 
         <UserAction
@@ -155,6 +179,7 @@ export function ShikiShotEditor() {
       <Codeplayground
         highlightedCodeRef={codeRef}
         highlightedCode={highlightedCode as JSX.Element}
+        textAreaRef={textAreaRef}
         defaultValue={input}
         onInputChange={handleInputChange}
       />
